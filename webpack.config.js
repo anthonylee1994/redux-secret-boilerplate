@@ -4,8 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const Dotenv = require('dotenv-webpack');
-const dotEnv = require('dotenv').config()
+const dotEnv = require('dotenv').config();
 
 const paths = {
     src: path.resolve(__dirname, "src"),
@@ -14,19 +13,24 @@ const paths = {
 };
 
 const env = process.env.NODE_ENV;
-const __DEV__ = env === "development";
-// const __PRODUCTION__ = env === "production";
+const __DEV__ = (env === "development");
 
-const development = {
+const extractStyles = new ExtractTextPlugin({ filename: "[name].[chunkhash].css" });
+const configs = {
     context: paths.src,
-    devtool: "cheap-module-source-map",
+    devtool: __DEV__ ? "cheap-module-source-map" : "source-map",
     entry: {
-        app: ["react-hot-loader/patch", "./index"]
+        app: (() => {
+            if (__DEV__) {
+                return ["react-hot-loader/patch", "./index"];
+            }
+            return "./index";
+        })(),
     },
     output: {
         path: paths.dist,
         publicPath: "/",
-        filename: "[name].bundle.js"
+        filename: __DEV__ ? "[name].bundle.js" : "[name].[chunkhash].js"
     },
     resolve: {
         extensions: [".js", ".ts", ".tsx"]
@@ -43,30 +47,73 @@ const development = {
             },
             {
                 test: /\.(scss|sass)$/,
-                use: [{ loader: "style-loader" }, { loader: "css-loader" }, { loader: "sass-loader" }],
+                use: (function () {
+                    if (__DEV__) {
+                        return [{ loader: "style-loader" }, { loader: "css-loader" }, { loader: "sass-loader" }]
+                    }
+                    return extractStyles.extract({
+                        use: [{
+                            loader: "css-loader",
+                            options: {
+                                minimize: true
+                            }
+                        }, {
+                            loader: "sass-loader"
+                        }],
+                        fallback: "style-loader"
+                    })
+                })(),
             }
         ]
     },
-    plugins: [
-        new Dotenv(),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.ProvidePlugin({
-            log: "js-logger",
-        }),
-        new webpack.DefinePlugin({
-            "process.env": Object.assign({
-                NODE_ENV: JSON.stringify(env),
-            }, dotEnv)
-            // "process.env.NODE_ENV": JSON.stringify(env),
-        }),
-        new webpack.NamedModulesPlugin(),
-        new HtmlWebpackPlugin({
-            env: process.env.DEPLOYMENT_ENV + "|" + process.env.COMMIT_ID + "|" + process.env.NODE_ENV,
-            template: "!!handlebars-loader!src/index.hbs",
-            inject: true
-        }),
-        new CopyWebpackPlugin([{ from: paths.public, to: path.resolve(paths.dist, "public"), }])
-    ],
+    plugins: (function () {
+        const plugins = [
+            new webpack.ProvidePlugin({
+                log: "js-logger",
+            }),
+            new webpack.DefinePlugin({
+                "process.env": Object.assign({
+                    NODE_ENV: JSON.stringify(env),
+                }, dotEnv)
+            }),
+            new HtmlWebpackPlugin({
+                env: "(" + process.env.DEPLOYMENT_ENV + "|" + process.env.COMMIT_ID + "|" + process.env.NODE_ENV + ")",
+                template: "!!handlebars-loader!src/index.hbs",
+                inject: true,
+                minify: {
+                    collapseWhitespace: true,
+                    preserveLineBreaks: false,
+                }
+            }),
+            new CopyWebpackPlugin([{ from: paths.public, to: path.resolve(paths.dist, "public"), }])
+        ];
+        if (__DEV__) {
+            plugins.push(
+                new webpack.HotModuleReplacementPlugin(),
+                new webpack.NamedModulesPlugin(),
+            );
+        } else {
+            plugins.push(
+                new CleanWebpackPlugin(["dist"]),
+                new webpack.optimize.UglifyJsPlugin({
+                    beautify: false,
+                    comments: false,
+                    sourceMap: true,
+                    compress: {
+                        sequences: true,
+                        booleans: true,
+                        loops: true,
+                        unused: true,
+                        warnings: false,
+                        drop_console: true,
+                        unsafe: true
+                    }
+                }),
+                extractStyles,
+            );
+        }
+        return plugins;
+    })(),
     devServer: {
         hot: true,
         port: 3000,
@@ -78,91 +125,6 @@ const development = {
             }
         }
     }
-};
-
-const extractStyles = new ExtractTextPlugin({ filename: "[name].[chunkhash].css" });
-
-const production = {
-    context: paths.src,
-    devtool: "source-map",
-    entry: {
-        app: "./index"
-    },
-    output: {
-        path: paths.dist,
-        publicPath: "/",
-        filename: "[name].[chunkhash].js"
-    },
-    resolve: {
-        extensions: [".js", ".ts", ".tsx"]
-    },
-    module: {
-        rules: [
-            {
-                test: /\.hbs$/,
-                loader: 'handlebars-loader'
-            },
-            {
-                test: /\.(ts|tsx)?$/,
-                loader: ["awesome-typescript-loader"]
-            },
-            {
-                test: /\.(scss|sass)$/,
-                use: extractStyles.extract({
-                    use: [{
-                        loader: "css-loader",
-                        options: {
-                            minimize: true
-                        }
-                    }, {
-                        loader: "sass-loader"
-                    }],
-                    fallback: "style-loader"
-                })
-            }
-        ]
-    },
-    plugins: [
-        new CleanWebpackPlugin(["dist"]),
-        new webpack.ProvidePlugin({
-            log: "js-logger",
-        }),
-        new webpack.DefinePlugin({
-            "process.env": Object.assign({
-                env: process.env.DEPLOYMENT_ENV + "|" + process.env.COMMIT_ID + "|" + process.env.NODE_ENV,
-                NODE_ENV: JSON.stringify(env),
-            }, dotEnv)
-            // "process.env.NODE_ENV": JSON.stringify(env),
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            beautify: false,
-            comments: false,
-            sourceMap: true,
-            compress: {
-                sequences: true,
-                booleans: true,
-                loops: true,
-                unused: true,
-                warnings: false,
-                drop_console: true,
-                unsafe: true
-            }
-        }),
-        new HtmlWebpackPlugin({
-            template: "!!handlebars-loader!src/index.hbs",
-            inject: true,
-            minify: {
-                collapseWhitespace: true,
-                preserveLineBreaks: false,
-            }
-        }),
-        extractStyles,
-        new CopyWebpackPlugin([{ from: paths.public, to: path.resolve(paths.dist, "public"), }])
-    ]
-};
-
-if (__DEV__) {
-    module.exports = development;
-} else {
-    module.exports = production;
 }
+
+module.exports = configs;

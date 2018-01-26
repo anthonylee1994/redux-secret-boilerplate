@@ -14,9 +14,9 @@ export class Home extends React.Component<any, undefined> {
     public render() {
         return <div>
             <NavLink to="/app">To App</NavLink>
+            <button onClick={() => this.props.decrement()}>-</button>
             {this.props.counter}
             <button onClick={() => this.props.increment()}>+</button>
-            <button onClick={() => this.props.decrement()}>-</button>
         </div>;
     }
 }
