@@ -66,54 +66,44 @@ const configs = {
             }
         ]
     },
-    plugins: (function () {
-        const plugins = [
-            new webpack.ProvidePlugin({
-                log: "js-logger",
-            }),
-            new webpack.DefinePlugin({
-                "process.env": Object.assign({
-                    NODE_ENV: JSON.stringify(env),
-                }, dotEnv)
-            }),
-            new HtmlWebpackPlugin({
-                env: "(" + process.env.DEPLOYMENT_ENV + "|" + process.env.COMMIT_ID + "|" + process.env.NODE_ENV + ")",
-                template: "!!handlebars-loader!src/index.hbs",
-                inject: true,
-                minify: {
-                    collapseWhitespace: true,
-                    preserveLineBreaks: false,
-                }
-            }),
-            new CopyWebpackPlugin([{ from: paths.public, to: path.resolve(paths.dist, "public"), }])
-        ];
-        if (__DEV__) {
-            plugins.push(
-                new webpack.HotModuleReplacementPlugin(),
-                new webpack.NamedModulesPlugin(),
-            );
-        } else {
-            plugins.push(
-                new CleanWebpackPlugin(["dist"]),
-                new webpack.optimize.UglifyJsPlugin({
-                    beautify: false,
-                    comments: false,
-                    sourceMap: true,
-                    compress: {
-                        sequences: true,
-                        booleans: true,
-                        loops: true,
-                        unused: true,
-                        warnings: false,
-                        drop_console: true,
-                        unsafe: true
-                    }
-                }),
-                extractStyles,
-            );
-        }
-        return plugins;
-    })(),
+    plugins: [
+        __DEV__ ? new webpack.HotModuleReplacementPlugin() : null,
+        __DEV__ ? new webpack.NamedModulesPlugin() : null,
+        __DEV__ ? null : new CleanWebpackPlugin(["dist"]),
+        __DEV__ ? null : extractStyles,
+        __DEV__ ? null : new webpack.optimize.UglifyJsPlugin({
+            beautify: false,
+            comments: false,
+            sourceMap: false,
+            compress: {
+                sequences: true,
+                booleans: true,
+                loops: true,
+                unused: true,
+                warnings: false,
+                drop_console: true,
+                unsafe: true
+            }
+        }), ,
+        new webpack.ProvidePlugin({
+            log: "js-logger",
+        }),
+        new webpack.DefinePlugin({
+            "process.env": Object.assign({
+                NODE_ENV: JSON.stringify(env),
+            }, dotEnv)
+        }),
+        new HtmlWebpackPlugin({
+            env: "(" + process.env.DEPLOYMENT_ENV + "|" + process.env.COMMIT_ID + "|" + process.env.NODE_ENV + ")",
+            template: "!!handlebars-loader!src/index.hbs",
+            inject: true,
+            minify: {
+                collapseWhitespace: true,
+                preserveLineBreaks: false,
+            }
+        }),
+        new CopyWebpackPlugin([{ from: paths.public, to: path.resolve(paths.dist, "public"), }])
+    ].filter((p) => p !== null),
     devServer: {
         hot: true,
         port: 3000,
