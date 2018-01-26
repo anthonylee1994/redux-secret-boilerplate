@@ -1,6 +1,6 @@
 {
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 2000,
+    "files.autoSave": "onFocusChange",
+    "files.autoSaveDelay": 0,
     "files.exclude": {
         "node_modules/": false,
         "__mocks__": true
