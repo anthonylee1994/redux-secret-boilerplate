@@ -46,23 +46,20 @@ const configs = {
                 loaders: ["react-hot-loader/webpack", "awesome-typescript-loader"]
             },
             {
-                test: /\.(scss|sass)$/,
-                use: (function () {
-                    if (__DEV__) {
-                        return [{ loader: "style-loader" }, { loader: "css-loader" }, { loader: "sass-loader" }]
-                    }
-                    return extractStyles.extract({
+                test: /\.(scss|sass|css)$/,
+                use: __DEV__ ? [{ loader: "style-loader" }, { loader: "css-loader", options: { modules: true } }, { loader: "sass-loader" }]
+                    : extractStyles.extract({
                         use: [{
                             loader: "css-loader",
                             options: {
+                                modules: true,
                                 minimize: true
                             }
                         }, {
                             loader: "sass-loader"
                         }],
                         fallback: "style-loader"
-                    })
-                })(),
+                    }),
             }
         ]
     },

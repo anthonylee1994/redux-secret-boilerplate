@@ -1,7 +1,8 @@
 import * as React from "react";
+import * as styles from "./styles.css";
 
 export class Button extends React.Component {
     public render() {
-        return <button>T1his is Button</button>;
+        return <button className={styles.button}>Button !?</button>;
     }
 }
