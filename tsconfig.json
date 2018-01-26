@@ -25,7 +25,7 @@
         "dist",
         "build",
         "node_modules",
-        "generator/**/*",
+        "blueprints/**/*",
         "**/__tests__/*"
     ]
 }

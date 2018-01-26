@@ -2,7 +2,7 @@ import { combineReducers, compose } from "redux";
 import * as flatten from "lodash/flatten";
 
 function getAllModules(): IReduxModule[] {
-    const r = require.context("./", true, /^(modules|plugins).*index.tsx$/);
+    const r = require.context("./", true, /^.*entry.tsx$/);
     return r.keys()
         .reduce((acc, curr) => {
             const m = r(curr).default;
@@ -14,7 +14,7 @@ function getAllModules(): IReduxModule[] {
             }
             return acc;
         }, [])
-        .sort((a, b) => { // sort modules by order
+        .sort((a, b) => { // sort modules
             return (a.order ? a.order : 0) - (b.order ? b.order : 0);
         });
 }

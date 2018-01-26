@@ -8,7 +8,9 @@
     "scripts": {
         "start": "better-npm-run dev",
         "build": "better-npm-run build",
-        "test": "jest --watch"
+        "test": "jest --watch",
+        "storybook": "start-storybook -p 6006",
+        "build-storybook": "build-storybook"
     },
     "betterScripts": {
         "dev": {
@@ -44,22 +46,24 @@
         "@types/classnames": "^2.2.0",
         "@types/history": "4.6.0",
         "@types/jest": "^20.0.6",
-        "@types/react-router": "4.0.14",
-        "@types/redux-actions": "1.2.6",
-        "@types/webpack": "3.0.4",
-        "@types/webpack-env": "^1.13.0",
         "@types/node": "^8.0.47",
         "@types/react": "^16.0.19",
         "@types/react-dom": "^16.0.2",
         "@types/react-redux": "^5.0.12",
+        "@types/react-router": "4.0.14",
         "@types/react-router-dom": "^4.2.0",
         "@types/react-router-redux": "^5.0.8",
+        "@types/redux-actions": "1.2.6",
+        "@types/webpack": "3.0.4",
+        "@types/webpack-env": "^1.13.0",
         "awesome-typescript-loader": "^3.3.0",
         "better-npm-run": "^0.1.0",
         "clean-webpack-plugin": "^0.1.17",
         "copy-webpack-plugin": "^4.2.3",
         "css-loader": "^0.28.7",
+        "dotenv-webpack": "^1.5.4",
         "extract-text-webpack-plugin": "^3.0.2",
+        "handlebars-loader": "^1.6.0",
         "html-webpack-plugin": "^2.30.1",
         "node-sass": "^4.5.3",
         "sass-loader": "^6.0.6",
@@ -68,9 +72,16 @@
         "tslint-react": "^3.3.3",
         "typescript": "^2.6.1",
         "webpack": "^3.8.1",
-        "webpack-dev-server": "^2.9.3"
+        "webpack-dev-server": "^2.9.3",
+        "@storybook/react": "^3.3.10",
+        "@storybook/addon-actions": "^3.3.10",
+        "@storybook/addon-links": "^3.3.10",
+        "@storybook/addons": "^3.3.10",
+        "babel-core": "^6.26.0"
     },
     "dependencies": {
+        "@storybook/addon-storyshots": "^3.3.10",
+        "@storybook/react": "^3.3.10",
         "axios": "^0.17.0",
         "core-js": "^2.5.1",
         "history": "^4.7.2",

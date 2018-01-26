@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const Dotenv = require('dotenv-webpack');
+const dotEnv = require('dotenv').config()
 
 const paths = {
     src: path.resolve(__dirname, "src"),
@@ -32,6 +34,10 @@ const development = {
     module: {
         rules: [
             {
+                test: /\.hbs$/,
+                loader: 'handlebars-loader'
+            },
+            {
                 test: /\.(ts|tsx)$/,
                 loaders: ["react-hot-loader/webpack", "awesome-typescript-loader"]
             },
@@ -42,13 +48,21 @@ const development = {
         ]
     },
     plugins: [
+        new Dotenv(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.ProvidePlugin({
             log: "js-logger",
         }),
+        new webpack.DefinePlugin({
+            "process.env": Object.assign({
+                NODE_ENV: JSON.stringify(env),
+            }, dotEnv)
+            // "process.env.NODE_ENV": JSON.stringify(env),
+        }),
         new webpack.NamedModulesPlugin(),
         new HtmlWebpackPlugin({
-            template: "./index.html",
+            env: process.env.DEPLOYMENT_ENV + "|" + process.env.COMMIT_ID + "|" + process.env.NODE_ENV,
+            template: "!!handlebars-loader!src/index.hbs",
             inject: true
         }),
         new CopyWebpackPlugin([{ from: paths.public, to: path.resolve(paths.dist, "public"), }])
@@ -85,6 +99,10 @@ const production = {
     module: {
         rules: [
             {
+                test: /\.hbs$/,
+                loader: 'handlebars-loader'
+            },
+            {
                 test: /\.(ts|tsx)?$/,
                 loader: ["awesome-typescript-loader"]
             },
@@ -110,7 +128,11 @@ const production = {
             log: "js-logger",
         }),
         new webpack.DefinePlugin({
-            "process.env.NODE_ENV": JSON.stringify(env)
+            "process.env": Object.assign({
+                env: process.env.DEPLOYMENT_ENV + "|" + process.env.COMMIT_ID + "|" + process.env.NODE_ENV,
+                NODE_ENV: JSON.stringify(env),
+            }, dotEnv)
+            // "process.env.NODE_ENV": JSON.stringify(env),
         }),
         new webpack.optimize.UglifyJsPlugin({
             beautify: false,
@@ -127,7 +149,7 @@ const production = {
             }
         }),
         new HtmlWebpackPlugin({
-            template: "./index.html",
+            template: "!!handlebars-loader!src/index.hbs",
             inject: true,
             minify: {
                 collapseWhitespace: true,
