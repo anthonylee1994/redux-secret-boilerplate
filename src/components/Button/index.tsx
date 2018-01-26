@@ -3,6 +3,6 @@ import * as styles from "./styles.css";
 
 export class Button extends React.Component {
     public render() {
-        return <button className={styles.button}>Button !?</button>;
+        return <button className={styles.button}>Butto1n !?</button>;
     }
 }
