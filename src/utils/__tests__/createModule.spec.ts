@@ -1,5 +1,5 @@
 import { createModule } from "../createModule";
-
+import * as snakeCase from "lodash/snakeCase";
 describe("createModule unit test", () => {
     const counter = createModule<any, any>("counter", { isLoading: false, counter: 0 }, {
         increment: {
@@ -7,7 +7,7 @@ describe("createModule unit test", () => {
             success: (state, action) => ({ ...state, isLoading: false, counter: ++state.counter }),
             failure: (state, action) => ({ ...state, isLoading: false }),
         },
-        decrement: {
+        decreMent: {
             request: (state, action) => ({ ...state, isLoading: true }),
             success: (state, action) => ({ ...state, isLoading: false, counter: --state.counter }),
             failure: (state, action) => ({ ...state, isLoading: false }),
@@ -16,7 +16,7 @@ describe("createModule unit test", () => {
     });
 
     it("should return correct number of keys", () => {
-        expect(counter.types).toHaveProperty("decrement_success");
+        expect(counter.types).toHaveProperty("decre_ment_success");
         expect(Object.keys(counter.types).length).toEqual(7);
     });
 
@@ -24,7 +24,7 @@ describe("createModule unit test", () => {
         expect(counter.actions.increment.request()).toEqual({ type: "@@counter/increment_request", payload: {} });
         expect(Object.keys(counter.actions).length).toEqual(3);
         expect(Object.keys(counter.actions.increment).length).toEqual(3);
-        expect(Object.keys(counter.actions.decrement).length).toEqual(3);
+        expect(Object.keys(counter.actions.decreMent).length).toEqual(3);
         expect(typeof counter.actions.set).toEqual("function");
     });
 

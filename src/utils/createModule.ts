@@ -1,10 +1,11 @@
 import { createReducer } from "redux-create-reducer";
 import { Reducer } from "redux";
+import * as snakeCase from "lodash/snakeCase";
 
 const generateTypes = (handler, moduleName) => {
     const fh = Object.keys(handler).reduce(flattenHandler(handler), {});
     return Object.keys(fh).reduce((acc, key) =>
-        ({ ...acc, [key]: `@@${moduleName}/${key}` }),
+        ({ ...acc, [snakeCase(key)]: `@@${moduleName}/${snakeCase(key)}` }),
         {});
 };
 const flattenHandler = (handler, parentKey = "") => (acc, key) => {
@@ -13,7 +14,7 @@ const flattenHandler = (handler, parentKey = "") => (acc, key) => {
         ...Object.keys(handler[key]).reduce(flattenHandler(handler[key], key), {}),
     } : {
             ...acc,
-            [`${parentKey}_${key}`]: handler[key],
+            [`${parentKey}_${snakeCase(key)}`]: handler[key],
         };
 };
 
@@ -26,7 +27,7 @@ const assignAction = (handler, parentName, moduleName) => (acc, key) => {
     }
     return {
         ...acc,
-        [key]: (payload = {}) => ({ type: `@@${moduleName}/${parentName}_${key}`, payload }),
+        [key]: (payload = {}) => ({ type: `@@${moduleName}/${parentName}_${snakeCase(key)}`, payload }),
     };
 };
 
@@ -40,7 +41,7 @@ const flattenReducerHandler = (handler, parentKey = "", moduleName) => (acc, key
         ...Object.keys(handler[key]).reduce(flattenReducerHandler(handler[key], key, moduleName), {}),
     } : {
             ...acc,
-            [`@@${moduleName}/${parentKey}_${key}`]: handler[key],
+            [`@@${moduleName}/${parentKey}_${snakeCase(key)}`]: handler[key],
         };
 };
 const generateReducer = (handler, moduleName, initialState) => {
