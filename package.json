@@ -14,7 +14,7 @@
     },
     "betterScripts": {
         "dev": {
-            "command": "webpack-dev-server",
+            "command": "webpack-dev-server --progress --info=false",
             "env": {
                 "NODE_ENV": "development"
             }
