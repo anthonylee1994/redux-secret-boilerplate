@@ -6,6 +6,7 @@
     "author": "",
     "license": "",
     "scripts": {
+        "g": "node node_modules/redux-cli/bin/redux.js g",
         "start": "better-npm-run dev",
         "build": "better-npm-run build",
         "test": "jest --watch",
@@ -43,6 +44,8 @@
         ]
     },
     "devDependencies": {
+        "@types/react-test-renderer": "^16.0.0",
+        "@types/storybook__react": "^3.0.6",
         "@storybook/addon-actions": "^3.3.10",
         "@storybook/addon-links": "^3.3.10",
         "@storybook/addon-storyshots": "^3.3.10",
@@ -57,7 +60,6 @@
         "@types/react-redux": "^5.0.12",
         "@types/react-router": "4.0.14",
         "@types/react-router-dom": "^4.2.0",
-        "@types/react-router-redux": "^5.0.8",
         "@types/redux-actions": "1.2.6",
         "@types/webpack": "3.0.4",
         "@types/webpack-env": "^1.13.0",
@@ -72,23 +74,26 @@
         "handlebars-loader": "^1.6.0",
         "html-webpack-plugin": "^2.30.1",
         "node-sass": "^4.5.3",
+        "redux-cli": "^1.9.0",
         "sass-loader": "^6.0.6",
         "style-loader": "^0.19.0",
         "tslint": "^5.8.0",
         "tslint-react": "^3.3.3",
         "typescript": "^2.6.2",
         "webpack": "^3.8.1",
-        "webpack-dev-server": "^2.9.3"
+        "webpack-dev-server": "^2.9.3",
+        "tslint-eslint-rules": "^4.1.1",
+        "tslint-react-recommended": "^1.0.15",
+        "ts-jest": "^22.0.1",
+        "jest": "^22.1.4",
+        "jest-cli": "^22.0.4"
     },
     "dependencies": {
-        "@types/react-test-renderer": "^16.0.0",
-        "@types/storybook__react": "^3.0.6",
         "axios": "^0.17.0",
+        "connected-react-router": "^4.3.0",
         "core-js": "^2.5.1",
         "history": "^4.7.2",
         "identity-obj-proxy": "^3.0.0",
-        "jest": "^22.1.4",
-        "jest-cli": "^22.0.4",
         "js-logger": "^1.4.1",
         "material-ui-next": "^1.0.0-beta.25",
         "normalize.css": "^7.0.0",
@@ -98,16 +103,12 @@
         "react-redux": "^5.0.6",
         "react-router": "^4.1.2",
         "react-router-dom": "^4.1.2",
-        "react-router-redux": "^5.0.0-alpha.8",
         "react-test-renderer": "^16.2.0",
         "redux": "^3.7.2",
         "redux-create-reducer": "^1.1.1",
         "redux-devtools-extension": "^2.13.2",
         "redux-form": "^7.2.0",
         "redux-freeze": "^0.1.5",
-        "redux-saga": "^0.16.0",
-        "ts-jest": "^22.0.1",
-        "tslint-eslint-rules": "^4.1.1",
-        "tslint-react-recommended": "^1.0.15"
+        "redux-saga": "^0.16.0"
     }
 }

@@ -1,14 +1,13 @@
 import * as React from "react";
-import { ConnectedRouter, routerReducer, routerMiddleware, push } from "react-router-redux";
+import { all } from "redux-saga/effects";
+import { connectRouter, routerMiddleware, ConnectedRouter } from "connected-react-router";
 import history from "../../history";
+export const moduleName = "connected-react-router";
 
 const reduxModule: IReduxModule = {
-    moduleName: "react-router-redux",
+    moduleName,
+    reducerEnhancers: [connectRouter(history)],
     middlewares: [routerMiddleware(history)],
-    // order: 999,
-    reducers: {
-        router: routerReducer,
-    },
     render: (Component) => {
         return class ConnectedRouterHoc extends React.Component<undefined, undefined> {
             public render() {

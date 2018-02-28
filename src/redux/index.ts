@@ -29,8 +29,9 @@ const getArrayByKey = (key): any[] => {
 };
 
 export const middlewares: any[] = flatten(getArrayByKey("middlewares"));
-export const enhancer = compose(...flatten(getArrayByKey("enhancers")));
+export const enhancer: any = compose(...flatten(getArrayByKey("enhancers")));
+export const reducerEnhancers: any = compose(...flatten(getArrayByKey("reducerEnhancers")));
 export const reducer: any = combineReducers(getArrayByKey("reducers").reduce((acc, r) => ({ ...acc, ...r }), {}));
 export const initialState: any = getArrayByKey("initialState").reduce((acc, r) => ({ ...acc, ...r }), {});
-export const enhanceComponent = compose(...getArrayByKey("render"));
+export const enhanceComponent: any = compose(...getArrayByKey("render"));
 export const onStoreCreate = getArrayByKey("onStoreCreate");

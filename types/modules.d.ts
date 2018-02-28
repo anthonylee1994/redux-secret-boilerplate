@@ -3,6 +3,7 @@ declare interface IReduxModule {
     moduleName: string;
     order?: number;
     reducers?: object;
+    reducerEnhancers?: any;
     initialState?: object;
     middlewares?: any[] | any;
     enhancers?: any;
