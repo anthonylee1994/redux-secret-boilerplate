@@ -9,9 +9,8 @@
 - [x] Redux Saga
 - [x] Redux DevTools Extension
 - [x] Jest
-- [ ] Storybook
-- [ ] Redux-cli
-- [ ] dotenv-webpack
+- [x] Storybook
+- [x] Redux-cli
 
 ## Setup
 
